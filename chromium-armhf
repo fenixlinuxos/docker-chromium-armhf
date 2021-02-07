@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
+STATUS="$(systemctl is-active docker.service)"
+if [ "${STATUS}" = "active" ]; then
+    echo "Execute your tasks ....."
+else 
+    sudo systemctl enable docker
+    sudo systemctl start docker
+fi
+
 echo "Set host IP for Pulseaudio"
-addrip="$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')"
+addrip="$(hostname -i | grep -v '127.0.0.1' | awk '{ print $1}')"
 
 echo "Enabling XHost Forwarding"
 xhost +local:docker
@@ -20,3 +28,7 @@ docker run --rm --privileged \
  -v /etc/machine-id:/etc/machine-id \
  --ipc=host \
   ${DOCKER_IMAGE_ID}
+
+sudo systemctl disable docker
+sudo systemctl stop docker
+
