@@ -2,7 +2,7 @@
 
 STATUS="$(systemctl is-active docker.service)"
 if [ "${STATUS}" = "active" ]; then
-    echo "Execute your tasks ....."
+    echo " Docker is running, when you close Chromium it will be disabled to save resources...."
 else 
     sudo systemctl enable docker
     sudo systemctl start docker
